@@ -1,3 +1,5 @@
+const PORT = process.env.PORT || 3000;
+
 const path = require('path');
 
 const express = require('express');
@@ -109,7 +111,7 @@ mongoose
 'mongodb+srv://NaveenSingh:nick1997@cluster0-d01o9.mongodb.net/shop?retryWrites=true&w=majority'
 )
   .then(result => {
-    app.listen(3000);
+    app.listen(PORT);
   })
   .catch(err => {
     console.log(err);
