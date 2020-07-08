@@ -285,8 +285,8 @@ exports.postPay = (req,res,next) => {
         "payment_method": "paypal"
     },
     "redirect_urls": {
-        "return_url": "http://localhost:3000/create-order",
-        "cancel_url": "http://localhost:3000/failed"
+        "return_url": "https://e-commerce-shopnow.herokuapp.com/create-order",
+        "cancel_url": "https://e-commerce-shopnow.herokuapp.com/failed"
     },
     "transactions": [{
         "item_list": {
