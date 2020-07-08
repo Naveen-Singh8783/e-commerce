@@ -1,0 +1,62 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/product.css">
+
+   <!--Flickity CSS -->
+<link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css" media="screen">
+
+
+
+</head>
+
+<body>
+    <%- include('../includes/navigation.ejs') %>
+    <div class="main-carousel" data-flickity='{"autoPlay": true }'>
+        <div class="carousel-cell">
+            <img class="img1" src="https://www.reliancedigital.in/medias/Motorola-RAZR-desktop-banner.jpg?context=bWFzdGVyfGltYWdlc3wzNDY2ODh8aW1hZ2UvanBlZ3xpbWFnZXMvaGFlL2g0MS85MzIwNzQ3NTMyMzE4LmpwZ3xjMzBkMjdmM2M4NTQ4NWUwOWRmYmU0NzVjODViOGYzMTYxMWI4ODY4NTdhYzllZWQ1NDYwNTEyZWQxNjNmMGU1">
+        </div>
+  <div class="carousel-cell">
+    <img class="img1" src="https://blog.mozilla.org/wp-content/uploads/2017/03/real-mobile-2x-1400x770.png">
+  </div>
+  <div class="carousel-cell">
+    <img class="img1" src="https://www.craypas.com/global/wp-content/uploads/2016/08/poster_colors_in_glass_bottle_mi.png">
+  </div>
+  <div class="carousel-cell">
+    <img class="img1" src="https://cdn.shopify.com/s/files/1/0064/5342/8271/files/BESO-Header-1_1400x500.jpg?v=1588297146">
+  </div>
+    </div>
+    <main>
+        <% if (prods.length > 0) { %>
+            <div class="grid">
+                <% for (let product of prods) { %>
+                    <article class="card product-item">
+                        <header class="card__header">
+                            <h1 class="product__title"><%= product.title %></h1>
+                        </header>
+                        <div class="card__image">
+                            <img src="/<%= product.imageUrl %>"
+                                alt="<%= product.title %>">
+                        </div>
+                        <div class="card__content">
+                            <h2 class="product__price">INR<%= product.price %></h2>
+                            <p class="product__description"><%= product.description %></p>
+                        </div>
+                        <div class="card__actions">
+                            <a href="/products/<%= product._id %>" class="btn">Details</a>
+                            <% if (isAuthenticated) { %>
+                                <%- include('../includes/add-to-cart.ejs', {product: product}) %>
+                            <% } %>
+                        </div>
+                    </article>
+                    
+                <% } %>
+            </div>
+            <%- include('../includes/pagination.ejs', {currentPage: currentPage, previousPage: previousPage, hasPreviousPage: hasPreviousPage, hasNextPage: hasNextPage, nextPage: nextPage, lastPage:lastPage}) %>
+        <% } else { %>
+            <h1>No Products Found!</h1>
+        <% } %>
+    </main>
+<%- include('../includes/end.ejs') %>
+
+<!--Flickity JavaScript -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>

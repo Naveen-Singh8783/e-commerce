@@ -1,0 +1,27 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+
+<body>
+   <%- include('../includes/navigation.ejs') %>
+
+    <main>
+        <% if (errorMassge) { %>
+        <div class="user-messages user-messages--error"><%= errorMassge %></div>
+        <% } %>
+        <form class="login-form" action="/reset" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <div class="form-control">
+                <label for="email">E-Mail</label>
+                <input type="email" name="email" id="email">
+            </div>
+            <button class="btn" type="submit">Reset Password</button>
+        </form>
+        <div class="centered">
+            <h1>Note:</h1>
+            <p>on clicking reset a link will be send to given email address through which you can reset your account's password<br></p>
+            <p>link will get expire after 24 Hours.</p>
+        </div>
+    </main>
+<%- include('../includes/end.ejs') %>
