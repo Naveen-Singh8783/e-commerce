@@ -102,20 +102,20 @@ app.use(authRoutes);
 
 app.use(errorController.get404);
 
- app.use((error, req, res, next) => {
+ /* app.use((error, req, res, next) => {
   res.render('500', {
     pageTitle: 'Error!',
     path: '/500'
     
   });
-}) 
+})  */
 
 mongoose
   .connect(
 'mongodb+srv://NaveenSingh:nick1997@cluster0-d01o9.mongodb.net/shop?retryWrites=true&w=majority'
 )
   .then(result => {
-    app.listen(PORT);
+    app.listen(3000);
   })
   .catch(err => {
     console.log(err);

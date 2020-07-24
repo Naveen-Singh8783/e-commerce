@@ -16,7 +16,7 @@
                 </ul>
                 
                 <div class="centered">
-                  <h2>Total: $<%= totalSum %></h2>
+                  <h2>Total: INR<%= totalSum %></h2>
                 </div>
 
 
@@ -24,7 +24,7 @@
                        <form action="/pay" method="POST">
                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                            <input type="hidden" name="totalSum" value="<%= totalSum %>">
-                           <button type="submit" class="btn">pay!</button>
+                           <button type="submit" class="btn">pay with PayPal</button>
                        </form>
                    </div>
                 
