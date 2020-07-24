@@ -36,5 +36,16 @@ router.post('/edit-product',isAuth ,[
 // /admin/product/productID
 router.delete('/product/:productId',isAuth , adminController.deleteProduct);
 
+// /admin/ads
+router.get('/ads/:productId', isAuth , adminController.getAddAds);
 
+router.post('/ads', isAuth,[
+    body('bid').isFloat().trim()
+], adminController.postAddAds);
+
+
+router.get('/ads', isAuth, adminController.getAds);
 module.exports = router;
+
+
+router.post('/delete-ads',isAuth , adminController.postDeleteAds);

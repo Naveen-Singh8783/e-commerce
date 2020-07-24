@@ -149,7 +149,10 @@ exports.postSignup = (req, res, next) => {
     const user = new User({
       email: email,
       password: hashPassword,
-      cart: {items: []}
+      cart: {items: []},
+
+      // ads
+      ads: {ad: []}
     });
     return user.save()
   })

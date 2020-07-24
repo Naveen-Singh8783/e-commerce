@@ -10,20 +10,30 @@
 
 <body>
     <%- include('../includes/navigation.ejs') %>
-    <div class="main-carousel" data-flickity='{"autoPlay": true }'>
-        <div class="carousel-cell">
-            <img class="img1" src="https://www.reliancedigital.in/medias/Motorola-RAZR-desktop-banner.jpg?context=bWFzdGVyfGltYWdlc3wzNDY2ODh8aW1hZ2UvanBlZ3xpbWFnZXMvaGFlL2g0MS85MzIwNzQ3NTMyMzE4LmpwZ3xjMzBkMjdmM2M4NTQ4NWUwOWRmYmU0NzVjODViOGYzMTYxMWI4ODY4NTdhYzllZWQ1NDYwNTEyZWQxNjNmMGU1">
+    <% if (ad.length > 0) { %>
+        <div class="main-carousel" data-flickity='{"autoPlay": true }'>
+            <% for (let ads of ad) { %>
+                <div class="carousel-cell">
+                    <img class="img1" 
+                    src="/<%= ads.posterUrl %>"
+                    alt="<%= ads.posterUrl %>"
+                    >
+                </div>
+                <% } %>
         </div>
-  <div class="carousel-cell">
-    <img class="img1" src="https://blog.mozilla.org/wp-content/uploads/2017/03/real-mobile-2x-1400x770.png">
-  </div>
-  <div class="carousel-cell">
-    <img class="img1" src="https://www.craypas.com/global/wp-content/uploads/2016/08/poster_colors_in_glass_bottle_mi.png">
-  </div>
-  <div class="carousel-cell">
-    <img class="img1" src="https://cdn.shopify.com/s/files/1/0064/5342/8271/files/BESO-Header-1_1400x500.jpg?v=1588297146">
-  </div>
-    </div>
+        <% } else { %>
+            <div class="main-carousel" data-flickity='{"autoPlay": true }'>
+                <div class="carousel-cell">
+                    <img class="img1" src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg">
+                </div>
+          <div class="carousel-cell">
+            <img class="img1" src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg">
+          </div>
+          <div class="carousel-cell">
+            <img class="img1" src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg">
+          </div>
+            </div>
+        <% } %>
     <main>
         <% if (prods.length > 0) { %>
             <div class="grid">
@@ -37,7 +47,7 @@
                                 alt="<%= product.title %>">
                         </div>
                         <div class="card__content">
-                            <h2 class="product__price">INR<%= product.price %></h2>
+                            <h2 class="product__price">INR <%= product.price %></h2>
                             <p class="product__description"><%= product.description %></p>
                         </div>
                         <div class="card__actions">

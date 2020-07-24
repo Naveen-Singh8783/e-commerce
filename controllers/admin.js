@@ -1,7 +1,7 @@
 const Product = require('../models/product');
 const fileHelper = require('../util/file');
 const { validationResult } = require('express-validator/check');
-const product = require('../models/product');
+const Ads = require('../models/ads');
 
 
 exports.getAddProduct = (req, res, next) => {
@@ -71,8 +71,6 @@ exports.postAddProduct = (req, res, next) => {
   product
     .save()
     .then(result => {
-      // console.log(result);
-      console.log('Created Product');
       res.redirect('/admin/products');
     })
     .catch(err => {
@@ -159,7 +157,6 @@ exports.postEditProduct = (req, res, next) => {
       }
       return product.save()
       .then(result => {
-        console.log('UPDATED PRODUCT!');
         res.redirect('/admin/products');
       })
     })
@@ -200,7 +197,7 @@ exports.deleteProduct = (req, res, next) => {
   })
   .then(() => {
       console.log('DESTROYED PRODUCT');
-      res.status(200).json({ message: 'Succes!'});
+      res.status(200).json({ message: 'Success!'});
     })
     .catch(err => {
         res.status(500).json({message: 'Product not Deleted!'}); 
@@ -209,3 +206,123 @@ exports.deleteProduct = (req, res, next) => {
 
 
 
+
+exports.getAddAds = (req, res, next) => {
+  const prodId = req.params.productId;
+  Product.findById(prodId)
+    .then(product => {
+      if (!product) {
+        return res.redirect('/');
+      }
+      res.render('admin/ads', {
+        pageTitle: 'Add Ads',
+        path: '/admin/edit-product',
+        hasError: false,
+        errorMassge: false,
+        product: product,
+        validationError: []     
+
+      });
+    })
+    .catch(err => {
+      console.log(prodId);
+      console.log(err);
+    });
+};
+
+
+exports.postAddAds = (req, res, next) => {
+  const prodId = req.body.productId;
+  const bid = req.body.bid;
+  const image = req.file;
+  const errors = validationResult(req);
+    if(!image){
+      console.log("in ads");
+      res.render('admin/ads', {
+        pageTitle: 'Add Ads',
+        path: '/admin/ads',
+        hasError: true,
+        product: {
+          _id: prodId
+        },
+        bid: bid,
+        errorMassge: 'Attached file is not a image type!',
+        validationError: []     
+  
+      });
+    }
+  
+    console.log(errors);
+    if(!errors.isEmpty()){
+      return res.status(422).render('admin/ads', {
+        pageTitle: 'Add Ads',
+        path: '/admin/Ads',
+        hasError: true,
+        errorMassge: errors.array()[0].msg,
+        bid: bid,
+        product: {
+          _id: prodId
+        },
+        validationError: errors.array()
+      });
+    }
+
+   
+    const posterUrl = image.path;
+
+    //adding in ads
+    const ads = new Ads({
+      userId: req.user,
+      productId: prodId,
+      posterUrl: posterUrl,
+      bid: bid
+    })
+
+    ads.save()
+    .then(result => {
+      res.redirect('/');
+    })
+    .catch(err => console.log(err));
+
+}
+
+
+// displaying total ads
+exports.getAds = (req, res, next) => {
+  Ads.find({userId: req.user._id})
+    .then(ads => {
+        console.log(ads);
+        res.render('admin/ads-list', {
+          ad: ads,
+          pageTitle: 'Your Ads',
+          path: '/admin/ads'
+      })     
+    })
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+      
+    });
+};
+
+// delete Ads 
+exports.postDeleteAds = (req, res, next) => {
+  const adsId = req.body.adsId;
+  Ads.findById(adsId).then(ads =>{
+    if(!ads){
+      return next(new Error("No Ad Found!"));
+    }
+    fileHelper.deleteFile(ads.posterUrl);
+    return Ads.deleteOne({_id: adsId, userId: req.user._id})
+  })
+  .then(() => {
+      console.log('Ad Deleted!');
+      res.redirect('/admin/ads');
+    })
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error); 
+    });
+};

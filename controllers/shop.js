@@ -5,6 +5,7 @@ const PDFDocument = require('pdfkit');
 
 const Product = require('../models/product');
 const Order = require('../models/order');
+const Ads = require('../models/ads');
 const paypal = require('paypal-rest-sdk');
 
 
@@ -16,7 +17,7 @@ paypal.configure({
 });
 
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 9;
 
 exports.getProducts = (req, res, next) => {
   const page = +req.query.page || 1;
@@ -82,17 +83,26 @@ exports.getIndex = (req, res, next) => {
     .limit(ITEMS_PER_PAGE);
   })
  .then(products => {
-      res.render('shop/index', {
-        prods: products,
-        pageTitle: 'Shop',
-        path: '/',
-        currentPage: page,
-        hasNextPage: ITEMS_PER_PAGE * page < totalItems,
-        hasPreviousPage: page > 1,
-        nextPage: page + 1,
-        previousPage: page - 1,
-        lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
-      });
+      Ads.find()
+      .then(ads => {
+        console.log(products);
+        res.render('shop/index', {
+          prods: products,
+          ad: ads,
+          pageTitle: 'Shop',
+          path: '/',
+          currentPage: page,
+          hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+          hasPreviousPage: page > 1,
+          nextPage: page + 1,
+          previousPage: page - 1,
+          lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
+        });
+
+      })
+
+
+  
     })
     .catch(err => {
       const error = new Error(err);
@@ -152,6 +162,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
 
 
 exports.getCheckout = (req, res, next) => {
+  
   req.user
   .populate('cart.items.productId')
   .execPopulate()
@@ -171,7 +182,6 @@ exports.getCheckout = (req, res, next) => {
     });
   })
   .catch(err => {
-    console.log(err);
    const error = new Error(err);
     error.httpStatusCode = 500;
     return next(error); 
@@ -259,13 +269,11 @@ exports.getInvoice = (req, res, next) => {
     let totalPrice = 0;
     order.products.forEach(prod => {
       totalPrice = totalPrice + prod.quantity * prod.product.price;
-      PdfDoc.fontSize(14).text(prod.product.title + ' - ' + prod.quantity + ' X ' + ' INR' + prod.product.price);      
+      PdfDoc.fontSize(14).text(prod.product.title + ' - ' + prod.quantity + ' X ' + ' $' + prod.product.price);      
   });
   PdfDoc.text('--------------------------------------------');
-  PdfDoc.fontSize(20).text('Total - INR'+totalPrice);
+  PdfDoc.fontSize(20).text('Total - $'+totalPrice);
   PdfDoc.end();
-
-
   })
   .catch(err => {
     return next(err);
@@ -279,28 +287,29 @@ exports.getInvoice = (req, res, next) => {
 
 exports.postPay = (req,res,next) => {
   const totalSum = req.body.totalSum;
+  console.log(totalSum);
   const create_payment_json = {
     "intent": "sale",
     "payer": {
         "payment_method": "paypal"
     },
     "redirect_urls": {
-        "return_url": "https://e-commerce-shopnow.herokuapp.com/create-order",
-        "cancel_url": "https://e-commerce-shopnow.herokuapp.com/failed"
+        "return_url": "http://localhost:3000/create-order",
+        "cancel_url": "http://localhost:3000/checkout"
     },
     "transactions": [{
         "item_list": {
             "items": [{
-                "name": "shop",
+                "name": "book",
                 "sku": "001",
-                "price": totalSum,
+                "price": 20,
                 "currency": "INR",
                 "quantity": 1
             }]
         },
         "amount": {
             "currency": "INR",
-            "total": totalSum
+            "total": 20
         },
         "description": "just test"
     }]
@@ -319,12 +328,4 @@ paypal.payment.create(create_payment_json, function (error, payment) {
   }
 });
  
-}
-
-exports.getPaymentFail = (req, res, next) => {
-  console.log("in failed");
-  res.render('shop/paymentfailed', {
-    path: '/orders',
-    pageTitle: 'Your Orders'
-  });
 }

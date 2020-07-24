@@ -24,8 +24,6 @@ router.get('/checkout', isAuth, shopController.getCheckout);
 
 router.post('/pay', shopController.postPay);
 
-router.get('/failed', isAuth,shopController.getPaymentFail);
-
 router.post('/create-order',isAuth , shopController.postOrder);
 
 router.get('/orders', shopController.getOrders);

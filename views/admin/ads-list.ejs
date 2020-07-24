@@ -1,0 +1,28 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/cart.css">
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+        <main>
+            <% if (ad.length > 0) { %>
+                <ul class="cart__item-list">
+                    <% ad.forEach(p => { %>
+                        <li class="cart__item">
+                            <h1>Ad Id: <%= p._id %></h1>
+                            <form action="/admin/delete-ads" method="POST">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <input type="hidden" value="<%= p._id %>" name="adsId">
+                                <button class="btn danger" type="submit">Delete</button>
+                            </form>
+                        </li>
+                    <% }) %>
+                </ul>
+                <hr>
+              
+                
+            <% } else { %>
+                <h1>No Ads posted By!</h1>
+            <% } %>
+        </main>
+        <%- include('../includes/end.ejs') %>

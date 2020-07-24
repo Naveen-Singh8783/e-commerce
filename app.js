@@ -1,4 +1,5 @@
-const PORT = process.env.PORT || 3000;
+var PORT = process.env.PORT ||  3000;
+
 
 const path = require('path');
 
@@ -28,8 +29,8 @@ const fileStroage = multer.diskStorage({
       cb(null, 'images')
   },
 
-  filename: (req, file, cb) =>{
-    cb(null, file.filename +'-'+ file.originalname);
+  filename: (req, file, cb) =>{ 
+    cb(null, Date.now() +'-'+ file.originalname);
   }
 });
 
@@ -52,7 +53,10 @@ const authRoutes = require('./routes/auth');
 const { error } = require('console');
 
 app.use(bodyParser.urlencoded({ extended: false }));
+
+//Init file upload
 app.use(multer({storage: fileStroage, fileFilter: fileFilter}).single('image'));
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images',express.static(path.join(__dirname, 'images')));
 app.use(
@@ -104,7 +108,7 @@ app.use(errorController.get404);
     path: '/500'
     
   });
-})  
+}) 
 
 mongoose
   .connect(

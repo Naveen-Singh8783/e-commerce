@@ -1,0 +1,34 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/product.css">
+</head>
+
+<body>
+   <%- include('../includes/navigation.ejs') %>
+
+    <main>
+        <% if (errorMassge) { %>
+            <div class="user-messages user-messages--error"><%= errorMassge %></div>
+        <% } %>
+       <div class="centered">
+           <h1>Current bid: $1/(per Day)</h1>
+       </div>
+        <form class="product-form" action="/admin/ads" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <div class="form-control">
+                <label for="image">Image</label>
+                <input 
+                type="file" name="image" id="image">
+            </div>
+            <div class="form-control">
+                <label for="bid">Your bid</label>
+                <input 
+                class="<%= validationError.find(e => e.param === 'bid') ? 'invaild' : '' %>"
+                type="number" name="bid" id="bid" step="0.01" value="<% if (hasError) { %><%= bid %><% } %>">
+            </div>
+
+            <input type="hidden" value="<%= product._id %>" name="productId">
+            <button class="btn" type="submit">Upload Poster</button>
+        </form>
+    </main>
+<%- include('../includes/end.ejs') %>
